@@ -261,8 +261,8 @@ def _get_key_from_posting(entry: Transaction, posting: Posting,
     return (posting.account, posting_date, posting.units, source_desc)
 
 
-def _get_key_from_csv_entry(x: MintEntry):
-    return (x.account, x.date, x.amount, x.source_desc)
+def _get_keys_from_csv_entry(x: MintEntry):
+    return [(x.account, x.date, x.amount, x.source_desc)]
 
 
 def _make_import_result(mint_entry: MintEntry) -> ImportResult:
@@ -341,7 +341,7 @@ class MintSource(description_based_source.DescriptionBasedSource):
             journal_entries=journal.all_entries,
             account_set=account_to_mint_id.keys(),
             get_key_from_posting=_get_key_from_posting,
-            get_key_from_raw_entry=_get_key_from_csv_entry,
+            get_keys_from_raw_entry=_get_keys_from_csv_entry,
             make_import_result=_make_import_result,
             results=results)
 

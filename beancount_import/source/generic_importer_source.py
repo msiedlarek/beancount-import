@@ -16,7 +16,7 @@ import os
 from glob import glob
 from collections import OrderedDict
 import itertools
-from typing import Hashable, List, Dict, Optional
+from typing import Hashable, List, Dict, Optional, Iterable
 
 from beancount.core import interpolate
 from beancount.core.data import Balance, Transaction, Posting,  Directive, Options
@@ -64,7 +64,7 @@ class ImporterSource(DescriptionBasedSource):
             # collect  all entries in current statement, grouped by hash
             hashed_entries = OrderedDict() #type: Dict[Hashable, Directive]
             for entry in f_entries:
-                key_ = self._get_key_from_imported_entry(entry)
+                key_ = tuple(self._get_keys_from_imported_entry(entry))
                 self._add_description(entry)
                 hashed_entries.setdefault(key_, []).append(entry)
             # deduplicate across statements
@@ -81,7 +81,7 @@ class ImporterSource(DescriptionBasedSource):
             journal_entries=journal.all_entries,
             account_set=set([self.account]),
             get_key_from_posting=_get_key_from_posting,
-            get_key_from_raw_entry=self._get_key_from_imported_entry,
+            get_keys_from_raw_entry=self._get_keys_from_imported_entry,
             make_import_result=lambda entry: self._make_import_result(entry,journal.options_map),
             results=results)
 
@@ -104,24 +104,19 @@ class ImporterSource(DescriptionBasedSource):
                         {"source_desc":entry.narration, "date": entry.date})
             postings.insert(i, p)
 
-    def _get_source_posting(self, entry:Transaction) -> Optional[Posting]:
-        for posting in entry.postings:
-            if posting.account == self.account:
-                return posting
-        return None
-
-    def _get_key_from_imported_entry(self, entry:Directive) -> Hashable:
+    def _get_keys_from_imported_entry(self, entry:Directive) -> Iterable[Hashable]:
         if isinstance(entry, Balance):
             return (entry.account, entry.date, entry.amount)
         if not isinstance(entry, Transaction):
             raise ValueError("currently, ImporterSource only supports Transaction and Balance Directive. Got entry {}".format(entry))
-        source_posting = self._get_source_posting(entry)
-        if source_posting is None:
+        keys = [
+            (self.account, entry.date, posting.units, entry.narration)
+            for posting in entry.postings
+            if posting.account == self.account
+        ]
+        if not keys:
             raise ValueError("entry {} has no postings for account: {}".format(entry, self.account))
-        return (self.account,
-                entry.date,
-                source_posting.units,
-                entry.narration)
+        return keys
 
     def _make_import_result(self, imported_entry: Directive, options_map: Options):
         if isinstance(imported_entry, Transaction):

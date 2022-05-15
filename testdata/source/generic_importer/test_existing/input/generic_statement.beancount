@@ -1,0 +1,7 @@
+2020-01-02 * "simple operation"
+  Assets:Checking  -1 USD
+  Assets:Savings    1 USD
+
+2020-01-03 * "currency exchange"
+  Assets:Checking   -1 USD @ 1 EUR
+  Assets:Checking    1 EUR

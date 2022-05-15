@@ -71,7 +71,7 @@ def get_pending_and_invalid_entries(
         account_set: AbstractSet[str], get_key_from_posting: Callable[[
             Transaction, Posting, List[Posting], str, datetime.date
         ], RawEntryKey],
-        get_key_from_raw_entry: Callable[[RawEntry], RawEntryKey],
+        get_keys_from_raw_entry: Callable[[RawEntry], Iterable[RawEntryKey]],
         make_import_result: Callable[[RawEntry], Transaction],
         results: SourceResults) -> None:
     matched_postings = dict(
@@ -99,11 +99,12 @@ def get_pending_and_invalid_entries(
         matched_postings_counter[key] += len(entry_posting_pairs)
 
     for raw_entry in raw_entries:
-        key = get_key_from_raw_entry(raw_entry)
-        if matched_postings_counter[key] > 0:
-            matched_postings_counter[key] -= 1
-        else:
-            results.add_pending_entry(make_import_result(raw_entry))
+        for key in get_keys_from_raw_entry(raw_entry):
+            if matched_postings_counter[key] > 0:
+                matched_postings_counter[key] -= 1
+            else:
+                results.add_pending_entry(make_import_result(raw_entry))
+                break
 
     for key, entry_posting_pairs in matched_postings.items():
         extra = matched_postings_counter[key]

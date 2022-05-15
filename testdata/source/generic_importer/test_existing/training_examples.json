@@ -1,0 +1,35 @@
+[
+  [
+    {
+      "amount": "-1 USD",
+      "date": "2020-01-02",
+      "key_value_pairs": {
+        "desc": "simple operation"
+      },
+      "source_account": "Assets:Checking"
+    },
+    "Assets:Savings"
+  ],
+  [
+    {
+      "amount": "-1 USD",
+      "date": "2020-01-03",
+      "key_value_pairs": {
+        "desc": "currency exchange"
+      },
+      "source_account": "Assets:Checking"
+    },
+    "Assets:Checking"
+  ],
+  [
+    {
+      "amount": "1 EUR",
+      "date": "2020-01-03",
+      "key_value_pairs": {
+        "desc": "currency exchange"
+      },
+      "source_account": "Assets:Checking"
+    },
+    "Assets:Checking"
+  ]
+]

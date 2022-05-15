@@ -63,4 +63,17 @@ def test_cost():
             'importer': BeancountLedgerImporter(),
         },
         replacements=[(testdata_dir, '<testdata>')])
-    
+
+
+def test_existing():
+    example_dir = os.path.join(testdata_dir, "test_existing")
+    check_source_example(
+        example_dir=example_dir,
+        source_spec={
+            'module': 'beancount_import.source.generic_importer_source',
+            'directory': os.path.join(example_dir, "input"),
+            'account': 'Assets:Checking',
+            'importer': BeancountLedgerImporter(),
+        },
+        replacements=[(testdata_dir, '<testdata>')]
+    )

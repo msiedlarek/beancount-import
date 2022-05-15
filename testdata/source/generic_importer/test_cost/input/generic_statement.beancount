@@ -10,3 +10,7 @@
 2020-01-03 * "atomatically balanced transaction"
   Assets:Bank      -5 USD
   Assets:Saving
+
+2020-01-04 * "convert currency within same account"
+  Assets:Bank    -1 USD
+  Assets:Bank     2 EUR @@ 1USD

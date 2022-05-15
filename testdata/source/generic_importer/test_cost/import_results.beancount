@@ -27,3 +27,13 @@
     date: 2020-01-03
     source_desc: "atomatically balanced transaction"
   Assets:Saving
+
+;; date: 2020-01-04
+;; info: {"filename": "<testdata>/test_cost/input/generic_statement.beancount", "line": 14, "type": "text/plain"}
+
+; features: []
+2020-01-04 * "convert currency within same account"
+  Assets:Bank  -1 USD
+    date: 2020-01-04
+    source_desc: "convert currency within same account"
+  Assets:Bank   2 EUR @ 0.5 USD

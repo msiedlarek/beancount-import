@@ -130,7 +130,7 @@ have the following form:
 Investment transactions always have all accounts fully specified.
 """
 
-from typing import NamedTuple, Optional, Union, Dict, List, Tuple
+from typing import NamedTuple, Optional, Union, Dict, List, Tuple, Iterable
 import csv
 import collections
 import datetime
@@ -330,7 +330,7 @@ MatchKey = NamedTuple(
                  ('cost', Optional[Amount]), ('units', Optional[Amount])])
 
 
-def get_key_from_raw_entry(entry: RawTransaction) -> MatchKey:
+def get_keys_from_raw_entry(entry: RawTransaction) -> Iterable[MatchKey]:
     transaction_type = entry.type if isinstance(entry,
                                                 CashTransaction) else None
     cost = None
@@ -339,8 +339,8 @@ def get_key_from_raw_entry(entry: RawTransaction) -> MatchKey:
         # there is one, or its cost otherwise. For raw entries, these are always
         # equal, so we don't need any special care to choose between them.
         cost = entry.price
-    return MatchKey(entry.account, entry.date, entry.description,
-                    transaction_type, cost, entry.units)
+    return [MatchKey(entry.account, entry.date, entry.description,
+                    transaction_type, cost, entry.units)]
 
 
 def get_key_from_posting(entry: Transaction, posting: Posting,
@@ -503,7 +503,7 @@ class Source(description_based_source.DescriptionBasedSource):
             journal_entries=journal.all_entries,
             account_set=account_to_id.keys(),
             get_key_from_posting=get_key_from_posting,
-            get_key_from_raw_entry=get_key_from_raw_entry,
+            get_keys_from_raw_entry=get_keys_from_raw_entry,
             make_import_result=lambda x: make_import_result(x, accounts=journal.accounts,
                                                             account_to_id=account_to_id,
                                                             id_to_account=id_to_account),

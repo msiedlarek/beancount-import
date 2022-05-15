@@ -1,0 +1,22 @@
+2020-01-01 open Assets:Checking
+2020-01-01 open Assets:Savings
+
+2020-01-02 * "simple operation"
+  Assets:Checking      -1 USD
+    date: 2020-01-02
+    source_desc: "simple operation"
+    cleared: TRUE
+  Assets:Savings        1 USD
+    date: 2020-01-02
+    source_desc: "simple operation"
+    cleared: TRUE
+
+2020-01-03 * "currency exchange"
+  Assets:Checking      -1 USD @ 1 EUR
+    date: 2020-01-03
+    source_desc: "currency exchange"
+    cleared: TRUE
+  Assets:Checking       1 EUR
+    date: 2020-01-03
+    source_desc: "currency exchange"
+    cleared: TRUE
